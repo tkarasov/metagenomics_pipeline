@@ -1,21 +1,9 @@
-## metagenomics_pipeline
-This pipline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes.
-Readme explain how to use a series of scripts in order to easily run and analyze metagenomic set derived from plant phylosphere. This pipeline ofcourse is not extensive and much more work can be done in addition to what is done in this repository. If you have any suggestion please let me know via issues. 
+# metagenomics_pipeline
+This pipeline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes.
 
-The following scripts permit the analysis of plant metagenomes. From filtering of plant data to taxonomic binning of microbial reads based on mappings to a reference database. 
-
-Some scripts perform several tasks using different software packages. You can use the dependencyCheck.sh script to check and install and missing programs. 
-
-All programs can be ran as shell scripts in any linux system. You can also submit them to the SGE queuing system in case you want to execute all programs in a cluster.
-
-Ignore image, will make sense in the future
-
-<p align="center">
- <img src=".drawings/drawing.svg">
-</p>
-
-# Get it!!!
-The following script and commands were first primarly developed by Juliana Regalado then developed further by Talia Karasov. The foolwing will download this repository and some of it's dependencies. It is important to execute the last "export" command in order for your system to execute the scripts without specifying full paths 
+## To retrieve the repository
+Again, most of the following bash and commands were first primarly developed by Juliana Regalado then developed further by Talia Karasov. The post-processing python scripts were written by Talia.
+The following will download this repository and some of it's dependencies. It is important to execute the last "export" command in order for your system to execute the scripts without specifying full paths 
 
        git clone --recursive https://github.com/tkarasov/metagenomics_pipeline.git
        cd metagenomics_pipeline
@@ -27,14 +15,14 @@ In order to get future updates, make sure to regularly execute:
        
 This will automatically apply any change made to any of the files in this repository
        
-# Check you have all the software needed to run the scripts
+## Check you have all the software needed to run the scripts
 
        source dependencyCheck.sh
 
 This will look for the necessary software in your computer. If certain program is not found, it will be installed in the same folder.
 
 
-# run_plantRemoval_tlk.sh
+## run_plantRemoval_tlk.sh
 
 Mapps short reads against the TAIR 10 reference genome. Removes PCR and optical duplicates from the bam file for downstraem use of host derived data (Eg. SNP calling) and extract unmapped read pairs to be trated as putatively microbial for downstream analysis.
 
@@ -70,7 +58,7 @@ NOTE!! - If your input reads are interleaved in a single file. You can separate 
        
 You can also modify the script by adding the "-p" flag after "mem" and providing your interleaved file as read1.fq
 
-# run_diamond_tlk.sh
+## run_diamond_tlk.sh
 After running run_plantRemoval.sh the output file <samplename>Metagenomic.fq.gz will have been produced with <samplename> being the basename with wich run_plantRemoval.sh was run. run_diamond.sh mapps reads in <samplename>Metagenomic.sh against the NCBI NR database. 
 
 Execution:
@@ -93,7 +81,7 @@ Output:
        unaligned.fa.gz - Unaligned reads in FASTA format. These are reads that did not map any reference sequence in the database
 
 
-# run_diamond-meganizer_tlk.sh
+## run_diamond-meganizer_tlk.sh
 After running run_diamond.sh, the output file <samplename>.daa will have been produced with <samplename> being the basename with wich run_diamond.sh was run. This script will perfomr taxonomic binning of aligned reads and reformat the .daa file so that it can be opened with MEGAN.
        
 Execution:
@@ -113,6 +101,16 @@ Output:
        
 By now you have a "meganized" dimond file, this means that your metagenomic analysis is ready to be visualized!! For this you will have to use MEGAN (http://ab.inf.uni-tuebingen.de/software/megan6/). 
 
-# Using Megan
+## Using Megan
+The post-processing of the MEGAN output requires that the output tables from MEGAN be in a specific format. Here are a few rules
 
-# Coverage Correction after MEGAN output table is generated
+(1) Process all reads
+
+(2) Export as CSV with all LCA assignments summarized
+
+(3) Export in the format TaxonRank to read count
+
+## Coverage Correction after MEGAN output table is generated
+
+Now with the csv file output from MEGAN, the read number needs to be updated to account for the 
+
