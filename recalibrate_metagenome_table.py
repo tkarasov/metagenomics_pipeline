@@ -102,7 +102,7 @@ def genus_family(genus_dict, meta_genus):
 #if __name__ == '__main__':
 #params = parser.parse_args()
 #genus_size = params.genus_dictionary
-genus_size = "/ebio/abt6_projects9/metagenomic_controlled/code/genus_dict.pck"
+genus_size = "/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipline/data/genus_dict.pck"
 metagenome = params.metagenome
 read_len = params.read_length
 host_reads = params.host_dir
