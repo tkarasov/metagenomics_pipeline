@@ -7,6 +7,7 @@ import os, sys, pickle, copy, subprocess
 import numpy as np
 import pandas as pd
 import warnings
+import ete3
 warnings.filterwarnings("ignore") #some compatibility issue with
 '''
 USAGE EXAMPLE
@@ -73,7 +74,7 @@ def convert_per_plant(meta_corrected, all_bam, genus_dict):
     return meta_corrected_new
 
 def genus_family(genus_dict, meta_genus):
-    '''this is a bad ad-hoc function to calculate the genome size average for a family overall'''
+    '''this is a bad ad-hoc function to calculate the genome size average for a family overall. this function is deprecated and replaced by gather_tree_family_genus'''
     genus_family_dict = {}
     for rec in meta_genus.index:
         family = rec.split(";")[6]
@@ -95,8 +96,25 @@ def genus_family(genus_dict, meta_genus):
         family_final[key] = [np.mean(family_size[key]), 0]
     return genus_family_dict, family_final
 
-
-
+def gather_tree_family_genus(genus_dict):
+    '''this function gathers the newick tree from MEGAN genera and gives all genera belonging to a specific family'''
+    megan_tree = ete3.Tree("/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipline/data/megan_genus_tree_10_2_2018.tre", format = 1)
+    #now iterate through every leaf and indicate its parent node (the leaves are all genera)
+    genus_family_map = {}
+    for leaf in megan_tree.get_leaves():
+        genus_family_map[leaf.name] = leaf.get_ancestors()[0].name
+    family_average  = {key:[] for key in set(genus_family_map.keys())}
+    for key in genus_family_map:
+        try:
+            size = genus_dict[key][0]
+            fam = genus_family_map[key]
+            family_average[fam].append(size)
+        except KeyError:
+            pass
+        family_final = {}
+        for key in family_average:
+            family_final[key] = [np.mean(family_average[key]),0]
+    return family_final
 
 
 #if __name__ == '__main__':
@@ -115,9 +133,9 @@ genus_dict = pickle.load(open(genus_size, 'rb'))
 #metagenome_data = pd.read_csv("/ebio/abt6_projects9/metagenomic_controlled/data/metagenome_tables/dc3000_88_compared.txt", error_bad_lines=False, sep = '\t', header = 0, index_col = 0)
 
 
-#meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if "Genus:" in rec]]
-#meta_genus.index = [line.strip("Genus:").strip('"') for line in meta_genus.index]
-meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if len(rec.split(";")) == 9]]
+meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if "Genus:" in rec]]
+meta_genus.index = [line.strip("Genus:").strip('"') for line in meta_genus.index]
+#meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if len(rec.split(";")) == 9]]
 
 genus_family_dict, family_average = genus_family(genus_dict, meta_genus)
 
