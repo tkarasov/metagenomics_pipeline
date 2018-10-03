@@ -14,9 +14,9 @@ Ignore image, will make sense in the future
 </p>
 
 # Get it!!!
-The following commands will download this repository and some of it's dependencies. It is important to execute the last "export" command in order for your system to execute the scripts without specifying full paths 
+The following script and commands were first primarly developed by Juliana Regalado then developed further by Talia Karasov. The foolwing will download this repository and some of it's dependencies. It is important to execute the last "export" command in order for your system to execute the scripts without specifying full paths 
 
-       git clone --recursive https://github.com/jregalad-o/metagenomics_pipeline.git
+       git clone --recursive https://github.com/tkarasov/metagenomics_pipeline.git
        cd metagenomics_pipeline
        # Add current directory to your PATH environmental variable so all scripts can be ran
        export PATH=$PATH:$(pwd)
@@ -112,7 +112,6 @@ Output:
        
 By now you have a "meganized" dimond file, this means that your metagenomic analysis is ready to be visualized!! For this you will have to use MEGAN (http://ab.inf.uni-tuebingen.de/software/megan6/). 
 
-Using MEGAN is very easy, just start the software and open your meganized daa file, start  visualizing!!!!
+#Using Megan
 
-# TO BE ADDED
-More updates are coming. These include extraction of reads that map to specific taxa, automatic rarefaction curves of multiple samples, assembly of metagenomic data and if you have any suggestion, plese let me know.  
+#Coverage Correction after MEGAN output table is generated
