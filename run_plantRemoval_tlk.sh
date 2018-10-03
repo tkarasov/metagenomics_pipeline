@@ -44,18 +44,18 @@ read_direc=$4
 echo "$sample"
 
 mkdir -p $sample.logs 
-picard=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/picard.jar
-samtools=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/samtools/samtools
-seqstats=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/seqstats/seqstats
+picard=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/picard.jar
+samtools=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/samtools/samtools
+seqstats=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/seqstats/seqstats
 
 # Running bwa mem to mapp short reads against TAIR10 ref genome 
 bwa mem\
     -R "@RG\tID:$sample\tSM:$sample"\
     /ebio/abt6_projects9/microbiome_analysis/data/genomes_DATA/athaliana/bwa_indexes/TAIR10 \
     $read1 $read2 2> $sample.logs/bwa.err |\
-    /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/samtools/samtools view \
+    /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/samtools/samtools view \
     -u -U "$sample"unmapped.bam -q 20 - |\
-    /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/samtools/samtools sort -m 970m - > "$sample".bam 2> $sample.logs/samsort.err
+    /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/samtools/samtools sort -m 970m - > "$sample".bam 2> $sample.logs/samsort.err
 
 #-u Output uncompressed BAM
 #-U write items not selected by filter items to other file. This pushes the 
