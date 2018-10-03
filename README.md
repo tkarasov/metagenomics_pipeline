@@ -1,5 +1,6 @@
 ## metagenomics_pipeline
-This readme explain how to use a series of scripts in order to easily run and analyze metagenomic set derived from plant phylosphere. This pipeline ofcourse is not extensive and much more work can be done in addition to what is done in this repository. If you have any suggestion please let me know via issues. 
+This pipline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes.
+Readme explain how to use a series of scripts in order to easily run and analyze metagenomic set derived from plant phylosphere. This pipeline ofcourse is not extensive and much more work can be done in addition to what is done in this repository. If you have any suggestion please let me know via issues. 
 
 The following scripts permit the analysis of plant metagenomes. From filtering of plant data to taxonomic binning of microbial reads based on mappings to a reference database. 
 
