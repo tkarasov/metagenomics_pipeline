@@ -1,21 +1,8 @@
 ## metagenomics_pipeline
-This pipline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes.
-Readme explain how to use a series of scripts in order to easily run and analyze metagenomic set derived from plant phylosphere. This pipeline ofcourse is not extensive and much more work can be done in addition to what is done in this repository. If you have any suggestion please let me know via issues. 
+This pipeline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes.
 
-The following scripts permit the analysis of plant metagenomes. From filtering of plant data to taxonomic binning of microbial reads based on mappings to a reference database. 
-
-Some scripts perform several tasks using different software packages. You can use the dependencyCheck.sh script to check and install and missing programs. 
-
-All programs can be ran as shell scripts in any linux system. You can also submit them to the SGE queuing system in case you want to execute all programs in a cluster.
-
-Ignore image, will make sense in the future
-
-<p align="center">
- <img src=".drawings/drawing.svg">
-</p>
-
-# Get it!!!
-The following script and commands were first primarly developed by Juliana Regalado then developed further by Talia Karasov. The foolwing will download this repository and some of it's dependencies. It is important to execute the last "export" command in order for your system to execute the scripts without specifying full paths 
+# To retrieve the repository
+The following script and commands were first primarly developed by Juliana Regalado then developed further by Talia Karasov. The following will download this repository and some of it's dependencies. It is important to execute the last "export" command in order for your system to execute the scripts without specifying full paths 
 
        git clone --recursive https://github.com/tkarasov/metagenomics_pipeline.git
        cd metagenomics_pipeline
@@ -114,5 +101,10 @@ Output:
 By now you have a "meganized" dimond file, this means that your metagenomic analysis is ready to be visualized!! For this you will have to use MEGAN (http://ab.inf.uni-tuebingen.de/software/megan6/). 
 
 # Using Megan
+The post-processing of the MEGAN output requires that the output tables from MEGAN be in a specific format. Here are a few rules
+
+(1) Process all reads
+(2) Export as CSV with all LCA assignments summarized
+(3) Export in the format TaxonRank to read count
 
 # Coverage Correction after MEGAN output table is generated
