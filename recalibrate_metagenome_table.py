@@ -72,9 +72,9 @@ def convert_per_plant(meta_corrected, all_bam, genus_dict):
             print("Issue with " + key)
             pass
     return meta_corrected_new
-
+'''
 def genus_family(genus_dict, meta_genus):
-    '''this is a bad ad-hoc function to calculate the genome size average for a family overall. this function is deprecated and replaced by gather_tree_family_genus'''
+    #this is a bad ad-hoc function to calculate the genome size average for a family overall. this function is deprecated and replaced by gather_tree_family_genus
     genus_family_dict = {}
     for rec in meta_genus.index:
         family = rec.split(";")[6]
@@ -95,6 +95,7 @@ def genus_family(genus_dict, meta_genus):
     for key in family_size:
         family_final[key] = [np.mean(family_size[key]), 0]
     return genus_family_dict, family_final
+'''
 
 def gather_tree_family_genus(genus_dict):
     '''this function gathers the newick tree from MEGAN genera and gives all genera belonging to a specific family'''
@@ -114,7 +115,7 @@ def gather_tree_family_genus(genus_dict):
         family_final = {}
         for key in family_average:
             family_final[key] = [np.mean(family_average[key]),0]
-    return family_final
+    return family_final, family_average
 
 
 #if __name__ == '__main__':
@@ -137,12 +138,13 @@ meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if "Genus
 meta_genus.index = [line.strip("Genus:").strip('"') for line in meta_genus.index]
 #meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if len(rec.split(";")) == 9]]
 
-genus_family_dict, family_average = genus_family(genus_dict, meta_genus)
+#genus_family_dict, family_average = genus_family(genus_dict, meta_genus)
+genus_family_dict, family_average = gather_tree_family_genus(genus_dict)
 
 meta_family = copy.deepcopy(meta_genus)
-meta_family.index = [line.split(";")[6] for line in meta_genus.index]
+meta_family.index = [genus_family_dict[genus] for genus in meta_genus.index]
 meta_family_group = meta_family.groupby(meta_family.index).sum()
-meta_genus.index = [line.split(";")[7] for line in meta_genus.index]
+#meta_genus.index = [line.split(";")[7] for line in meta_genus.index]
 
 
 
