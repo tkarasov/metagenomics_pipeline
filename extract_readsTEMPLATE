@@ -1,0 +1,3 @@
+open file='<FileName>';
+extract what=reads outdir='<OutputFilePath>' outfile='<FileName>' data=Taxonomy ids= <id1 id2 id3 ...> -2 allBelow=true;
+quit;
