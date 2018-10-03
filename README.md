@@ -104,7 +104,9 @@ By now you have a "meganized" dimond file, this means that your metagenomic anal
 The post-processing of the MEGAN output requires that the output tables from MEGAN be in a specific format. Here are a few rules
 
 (1) Process all reads
+
 (2) Export as CSV with all LCA assignments summarized
+
 (3) Export in the format TaxonRank to read count
 
 # Coverage Correction after MEGAN output table is generated
