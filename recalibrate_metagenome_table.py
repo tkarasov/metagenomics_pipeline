@@ -28,18 +28,18 @@ params = parser.parse_args()
 print("Running Metagenome Recalibrator")
 
 
-def convert_read_coverage(meta_genus, genus_dic):
-    meta_genus_new = copy.deepcopy(meta_genus)
-    for genus in meta_genus.index:
+def convert_read_coverage(meta_phy, phy_dict):
+    meta_phy_new = copy.deepcopy(meta_phy)
+    for phy in meta_phy.index:
         try:
-            size = genus_dict[genus][0]*1000000
-            reads = meta_genus.loc[genus]*150.0
+            size = phy_dict[phy][0]*1000000
+            reads = meta_phy.loc[phy]*150.0
             coverage = reads/size
-            meta_genus_new.loc[genus] = coverage
+            meta_phy_new.loc[phy] = coverage
             print(coverage)
         except KeyError:
             pass
-    return meta_genus_new
+    return meta_phy_new
 
 def calculate_percent_mapped(sample):
     '''this function caluclates the ratio of reads mapped to TAIR10 vs unmapped'''
@@ -99,29 +99,40 @@ def genus_family(genus_dict, meta_genus):
 
 def gather_tree_family_genus(genus_dict):
     '''this function gathers the newick tree from MEGAN genera and gives all genera belonging to a specific family'''
-    megan_tree = ete3.Tree("/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipline/data/megan_genus_tree_10_2_2018.tre", format = 1)
+    megan_tree = ete3.Tree("/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/data/megan_genus_tree_10_2_2018.tre", format = 1)
     #now iterate through every leaf and indicate its parent node (the leaves are all genera)
     genus_family_map = {}
     for leaf in megan_tree.get_leaves():
         genus_family_map[leaf.name] = leaf.get_ancestors()[0].name
-    family_average  = {key:[] for key in set(genus_family_map.keys())}
+    family_average  = {value:[] for value in set(genus_family_map.values())}
     for key in genus_family_map:
         try:
             size = genus_dict[key][0]
             fam = genus_family_map[key]
             family_average[fam].append(size)
         except KeyError:
-            pass
-        family_final = {}
-        for key in family_average:
-            family_final[key] = [np.mean(family_average[key]),0]
-    return family_final, family_average
+            fam = genus_family_map[key]
+            if len(family_average[fam])>0:
+                print(family_average[fam])
+                pass
+            if len(family_average[fam])==0:
+                family_average[fam].append(49.99999)
+            #if there is no representation for genus give genome size of 50Mb
+            #pass
+    family_final = {}
+    for key in family_average:
+        if len([rec for rec in family_average[key] if rec!=49.99999])>0:
+            fam_intermediate = [rec for rec in family_average[key] if rec!=49.99999]
+            family_final[key] = [np.mean(fam_intermediate),0]
+        else:
+            family_final[key] = [50, 0]
+    return family_final, genus_family_map
 
 
 #if __name__ == '__main__':
 #params = parser.parse_args()
 #genus_size = params.genus_dictionary
-genus_size = "/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipline/data/genus_dict.pck"
+genus_size = "/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/data/genus_dict.pck"
 metagenome = params.metagenome
 read_len = params.read_length
 host_reads = params.host_dir
@@ -130,6 +141,7 @@ host_reads = params.host_dir
 metagenome_data = pd.read_csv(metagenome, error_bad_lines=False, sep = '\t', header = 0, index_col = 0)
 genus_dict = pickle.load(open(genus_size, 'rb'))
 #tot = {q}
+metagenome_data = pd.read_csv("/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections/dc3000_all_summarized_metagenome_table_10_2018.txt", error_bad_lines=False, sep = '\t', header = 0, index_col = 0)
 #pd.read_csv("/ebio/abt6_projects9/pathodopsis_microbiomes/data/processed_reads/2018_7_metagenome_reads/metagenome_all_summarized.txt", error_bad_lines=False, sep = '\t', header = 0, index_col = 0)
 #metagenome_data = pd.read_csv("/ebio/abt6_projects9/metagenomic_controlled/data/metagenome_tables/dc3000_88_compared.txt", error_bad_lines=False, sep = '\t', header = 0, index_col = 0)
 
@@ -139,7 +151,7 @@ meta_genus.index = [line.strip("Genus:").strip('"') for line in meta_genus.index
 #meta_genus = metagenome_data.loc[[rec for rec in metagenome_data.index if len(rec.split(";")) == 9]]
 
 #genus_family_dict, family_average = genus_family(genus_dict, meta_genus)
-genus_family_dict, family_average = gather_tree_family_genus(genus_dict)
+family_final, genus_family_dict = gather_tree_family_genus(genus_dict)
 
 meta_family = copy.deepcopy(meta_genus)
 meta_family.index = [genus_family_dict[genus] for genus in meta_genus.index]
@@ -150,14 +162,14 @@ meta_family_group = meta_family.groupby(meta_family.index).sum()
 
 #generate table with everything converted to coverage per genome
 meta_corrected = convert_read_coverage(meta_genus, genus_dict)
-meta_family_correct = convert_read_coverage(meta_genus, family_average)
+meta_family_correct=convert_read_coverage(meta_family_group, family_final)
 
 #go through every bam file in directory
 all_bam = findfiles(host_reads)
 
 #convert meta table to read coverage per genome per athal coverage
 meta_corrected_per_plant = convert_per_plant(meta_corrected, all_bam, genus_dict)
-meta_family_per_plant = convert_per_plant(meta_corrected, all_bam, genus_dict)
+meta_family_per_plant = convert_per_plant(meta_family_correct, all_bam, genus_dict)
 
 
 #output converted table

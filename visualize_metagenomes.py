@@ -40,9 +40,9 @@ months = df['Month'].drop_duplicates()
 margin_bottom = np.zeros(len(df['Year'].drop_duplicates()))
 pivot_df = df.pivot(index='Year', columns='Month', values='Value')
 # Note: .loc[:,['Jan','Feb', 'Mar']] is used here to rearrange the layer ordering
-pivot_df.loc[:, ['Jan', 'Feb', 'Mar']].plot.bar(stacked=True, color=colors, figsize=(10, 7), width=0.9)
+pivot_df.loc[:, ['Jan', 'Feb', 'Mar']].plot.bar(stacked=True, color=colors, figsize=(10, 7), width=0.95)
 # plt.show()
-
+plt.ylabel("Proportion of genome covered per A. thaliana genome")
 plt.savefig('genus_barplot.pdf')
 
 # PCA
