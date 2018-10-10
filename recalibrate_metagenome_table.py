@@ -62,14 +62,19 @@ def findfiles(path):
             if "unmapped.bam" in fname:
                 unmapped_file = fname
                 sample = fname.replace("unmapped", "").replace(".bam", "")
-                all_bam[sample] = calculate_percent_mapped(sample)
+                error_bam=[]
+                try:
+                    all_bam[sample] = calculate_percent_mapped(sample)
+                except subprocess.CalledProcessError:
+                    error_bam.append(sample)
     return all_bam
 
 
 def convert_per_plant(meta_corrected, all_bam, genus_dict):
     '''output coverage per genome microbe divided by coverage per genome of A. thaliana'''
     athal_cov = {}
-    meta_corrected_new = copy.deepcopy(meta_corrected)
+    #there have been problems with some bam files. Limit to those bam files that are fine.
+    meta_corrected_new = copy.deepcopy(meta_corrected) #[list(all_bam.keys())]
     athal = genus_dict["Arabidopsis"][0]
     for key in list(all_bam.keys()):
         bp_cov = read_len * all_bam[key][0] / float(athal * 1000000)
@@ -165,7 +170,11 @@ meta_genus.index = [line.strip("Genus:").strip('"') for line in meta_genus.index
 family_final, genus_family_dict = gather_tree_family_genus(genus_dict)
 
 meta_family = copy.deepcopy(meta_genus)
-meta_family.index = [genus_family_dict[genus] for genus in meta_genus.index]
+
+#some genera are not found in the tree (somehow). For now will exclude
+temp =  [genus for genus in meta_genus.index if genus in genus_family_dict]
+meta_family = meta_family.loc[temp]
+meta_family.index = [genus_family_dict[genus] for genus in meta_family.index]
 meta_family_group = meta_family.groupby(meta_family.index).sum()
 #meta_genus.index = [line.split(";")[7] for line in meta_genus.index]
 
