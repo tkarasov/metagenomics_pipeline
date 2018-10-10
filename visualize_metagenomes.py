@@ -15,16 +15,30 @@ USAGE EXAMPLE
 ./visualize_metagenome -genus_meta_table genus_recalibrate -family_meta_table family_recalibrate
 
 '''
+def subset_limit(meta_file, limit):
+        max_val = meta_file.max(skipna = True, axis=0)>0.1
+        tot=meta_file[[rec for rec in max_val.index if max_val.loc[rec]==True]]
+        return tot
 
-genus_file = sys.argv[0]
-family_file = sys.argv[1]
+
+
+
+
+genus_file = sys.argv[1]
+family_file = sys.argv[2]
+print(family_file)
 genus_file = "meta_genus_corrected_per_plant.csv"
+family_file="meta_family_corrected_per_plant.csv"
 genus = pd.read_csv(genus_file, index_col=0).transpose()
 family = pd.read_csv(family_file, index_col=0).transpose()
 # sort genus on
 # or with a pandas dataframe
 # matplotlib.style.use('ggplot')
 # https://pstblog.com/2016/10/04/stacked-charts
+
+
+
+
 
 
 fig, ax = plt.subplots()
