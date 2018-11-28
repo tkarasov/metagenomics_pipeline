@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# the goal of this script is to take a metagenome table and recalibrate based off of the average size per genus. The script takes the output file from
+# the goal of this script is to take a metagenome table and recalibrate based off of the average size per genus. The script takes the output file from megan.
 
 import argparse
 import os
@@ -32,6 +32,7 @@ print("Running Metagenome Recalibrator")
 
 
 def convert_read_coverage(meta_phy, phy_dict):
+    #this function converts read coverage for the microbes
     meta_phy_new = copy.deepcopy(meta_phy)
     for phy in meta_phy.index:
         try:
@@ -46,38 +47,29 @@ def convert_read_coverage(meta_phy, phy_dict):
             pass
     return meta_phy_new
 
-
-def calculate_percent_mapped(sample):
-    '''this function caluclates the ratio of reads mapped to TAIR10 vs unmapped'''
-    sample_map = float(subprocess.check_output(['/usr/bin/samtools', 'view', '-c', sample + '.bam']))
-    sample_unmap = float(subprocess.check_output(['/usr/bin/samtools', 'view', '-c', sample + 'unmapped.bam']))
-    sample_total = sample_unmap + sample_map
-    return sample_map, sample_unmap, sample_total
-
-
 def findfiles(path):
-    all_bam = {}
+    all_depth = {}
     for root, dirs, fnames in os.walk(path):
         for fname in fnames:
-            if "unmapped.bam" in fname:
-                unmapped_file = fname
-                sample = fname.replace("unmapped", "").replace(".bam", "")
-                error_bam=[]
+            if ".depth" in fname:
+                sample = fname
+                error_depth=[]
                 try:
-                    all_bam[sample] = calculate_percent_mapped(sample)
+                    for line in open(fname):
+                        if "average_coverage" in line:
+                            coverage=line.split("= ")[1]
+                    all_depth[sample]=coverage
                 except subprocess.CalledProcessError:
-                    error_bam.append(sample)
-    return all_bam
+                    error_depth.append(sample)
+    return all_depth
 
-
-def convert_per_plant(meta_corrected, all_bam, genus_dict):
-    '''output coverage per genome microbe divided by coverage per genome of A. thaliana'''
+def convert_per_plant(meta_corrected, all_depth, genus_dict):
+    #'''output coverage per genome microbe divided by coverage per genome of A. thaliana'''
     athal_cov = {}
-    #there have been problems with some bam files. Limit to those bam files that are fine.
     meta_corrected_new = copy.deepcopy(meta_corrected) #[list(all_bam.keys())]
     athal = genus_dict["Arabidopsis"][0]
-    for key in list(all_bam.keys()):
-        bp_cov = read_len * all_bam[key][0] / float(athal * 1000000)
+    for key in list(all_depth.keys()):
+        bp_cov = float(all_depth[key])
         athal_cov[key] = bp_cov
         try:
             meta_corrected_new[key] = meta_corrected[key] / bp_cov
@@ -85,33 +77,6 @@ def convert_per_plant(meta_corrected, all_bam, genus_dict):
             print("Issue with " + key)
             pass
     return meta_corrected_new
-
-
-'''
-def genus_family(genus_dict, meta_genus):
-    #this is a bad ad-hoc function to calculate the genome size average for a family overall. this function is deprecated and replaced by gather_tree_family_genus
-    genus_family_dict = {}
-    for rec in meta_genus.index:
-        family = rec.split(";")[6]
-        genus = rec.split(";")[7]
-        genus_family_dict[genus] = family
-    family_size = {key:[] for key in set(genus_family_dict.values())}
-    for genus_full in meta_genus.index:
-        if len(genus_full.split(";"))==9:
-            #I don't like the previous condition but its a way to limit to only those at genus level
-            genus = genus_full.split(";")[7]
-            try:
-                size = genus_dict[genus][0]
-                family = genus_family_dict[genus]
-                family_size[family].append(size)
-            except KeyError:
-                print("No result for " + genus)
-    family_final = {}
-    for key in family_size:
-        family_final[key] = [np.mean(family_size[key]), 0]
-    return genus_family_dict, family_final
-'''
-
 
 def gather_tree_family_genus(genus_dict):
     '''this function gathers the newick tree from MEGAN genera and gives all genera belonging to a specific family'''
@@ -183,14 +148,81 @@ meta_family_group = meta_family.groupby(meta_family.index).sum()
 meta_corrected = convert_read_coverage(meta_genus, genus_dict)
 meta_family_correct = convert_read_coverage(meta_family_group, family_final)
 
-# go through every bam file in directory
-all_bam = findfiles(host_reads)
+# Originally I had planned to go through every bam file in the directory which is the below code for all_bam, but this is deprecated. I calculated average depth of coverage with samtools depth
+all_depth = findfiles(host_reads)
 
 # convert meta table to read coverage per genome per athal coverage
-meta_corrected_per_plant = convert_per_plant(meta_corrected, all_bam, genus_dict)
-meta_family_per_plant = convert_per_plant(meta_family_correct, all_bam, genus_dict)
+meta_corrected_per_plant = convert_per_plant(meta_corrected, all_depth, genus_dict)
+meta_family_per_plant = convert_per_plant(meta_family_correct, all_depth, genus_dict)
 
 
 # output converted table
 meta_corrected_per_plant.to_csv("meta_genus_corrected_per_plant.csv", header=True, index=True)
 meta_family_per_plant.to_csv("meta_family_corrected_per_plant.csv", header=True, index=True)
+
+
+
+'''
+The following are deprecated functions
+def calculate_percent_mapped(sample):
+    '''this function caluclates the ratio of reads mapped to TAIR10 vs unmapped'''
+    sample_map = float(subprocess.check_output(['/usr/bin/samtools', 'view', '-c', sample + '.bam']))
+    sample_unmap = float(subprocess.check_output(['/usr/bin/samtools', 'view', '-c', sample + 'unmapped.bam']))
+    sample_total = sample_unmap + sample_map
+    return sample_map, sample_unmap, sample_total
+
+
+def findfiles(path):
+    all_bam = {}
+    for root, dirs, fnames in os.walk(path):
+        for fname in fnames:
+            if "unmapped.bam" in fname:
+                unmapped_file = fname
+                sample = fname.replace("unmapped", "").replace(".bam", "")
+                error_bam=[]
+                try:
+                    all_bam[sample] = calculate_percent_mapped(sample)
+                except subprocess.CalledProcessError:
+                    error_bam.append(sample)
+    return all_bam
+
+
+def convert_per_plant(meta_corrected, all_bam, genus_dict):
+    #'''output coverage per genome microbe divided by coverage per genome of A. thaliana'''
+    athal_cov = {}
+    #there have been problems with some bam files. Limit to those bam files that are fine.
+    meta_corrected_new = copy.deepcopy(meta_corrected) #[list(all_bam.keys())]
+    athal = genus_dict["Arabidopsis"][0]
+    for key in list(all_bam.keys()):
+        bp_cov = read_len * all_bam[key][0] / float(athal * 1000000)
+        athal_cov[key] = bp_cov
+        try:
+            meta_corrected_new[key] = meta_corrected[key] / bp_cov
+        except KeyError:
+            print("Issue with " + key)
+            pass
+    return meta_corrected_new
+
+def genus_family(genus_dict, meta_genus):
+    #this is a bad ad-hoc function to calculate the genome size average for a family overall. this function is deprecated and replaced by gather_tree_family_genus
+    genus_family_dict = {}
+    for rec in meta_genus.index:
+        family = rec.split(";")[6]
+        genus = rec.split(";")[7]
+        genus_family_dict[genus] = family
+    family_size = {key:[] for key in set(genus_family_dict.values())}
+    for genus_full in meta_genus.index:
+        if len(genus_full.split(";"))==9:
+            #I don't like the previous condition but its a way to limit to only those at genus level
+            genus = genus_full.split(";")[7]
+            try:
+                size = genus_dict[genus][0]
+                family = genus_family_dict[genus]
+                family_size[family].append(size)
+            except KeyError:
+                print("No result for " + genus)
+    family_final = {}
+    for key in family_size:
+        family_final[key] = [np.mean(family_size[key]), 0]
+    return genus_family_dict, family_final
+'''

@@ -19,7 +19,7 @@
 ####################################################################
 #
 #  Import environment
-#$ -V 
+#$ -V
 #  Use /bin/bash to execute this scripti
 #$ -S /bin/bash
 #
@@ -30,7 +30,7 @@
 # -pe parallel 30
 ##  Reserve 30 CPUs for this job
 #
-#  Request 30G of RAM   
+#  Request 30G of RAM
 ## -l h_vmem=1G
 #  Limit run time to 4 hours
 ## -l h_rt=4:00:00
@@ -43,12 +43,12 @@ read_direc=$4
 
 echo "$sample"
 
-mkdir -p $sample.logs 
+mkdir -p $sample.logs
 picard=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/picard.jar
 samtools=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/samtools/samtools
 seqstats=/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/seqstats/seqstats
 
-# Running bwa mem to mapp short reads against TAIR10 ref genome 
+# Running bwa mem to mapp short reads against TAIR10 ref genome
 bwa mem\
     -R "@RG\tID:$sample\tSM:$sample"\
     /ebio/abt6_projects9/microbiome_analysis/data/genomes_DATA/athaliana/bwa_indexes/TAIR10 \
@@ -58,8 +58,8 @@ bwa mem\
     /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/samtools/samtools sort -m 970m - > "$sample".bam 2> $sample.logs/samsort.err
 
 #-u Output uncompressed BAM
-#-U write items not selected by filter items to other file. This pushes the 
-#The following was removed -t 30 -@30 Number of BAM compression threads to use in addition to main thread 
+#-U write items not selected by filter items to other file. This pushes the
+#The following was removed -t 30 -@30 Number of BAM compression threads to use in addition to main thread
 #-m 970m Only output alignments with number of CIGAR bases consuming query sequence ≥ INT [0]
 
 
@@ -73,11 +73,14 @@ java -Xmx20g -jar \
     MarkDuplicates I="$sample".bam O="$sample"DEDUP.bam \
     M=$sample.logs/metrics.txt REMOVE_DUPLICATES=true 2> $sample.logs/picard.err
 
-
 # Remove unduplicated file
 printf "Finished duplicate removal status: $?\n"
 rm "$sample".bam
 mv "$sample"DEDUP.bam "$sample".bam
+
+#calculate read depth (-a option outputs absolutely all positions). Last line of depth file is the average depth
+$samtools depth -a  "$sample".bam > $sample.depth
+cat $sample.depth| grep chr | cut -f 3 | awk '{ total += $1 } END { print total/NR }'>> $sample.depth
 
 # Extract unmapped reads (-f 4 extracts only unmapped reads)
 $samtools view \
@@ -90,7 +93,7 @@ $samtools view \
 printf "Finished unmapped extraction status: $?\n"
 
 
-gzip -9 "$sample"MetagenomicR1R2.fq & 
+gzip -9 "$sample"MetagenomicR1R2.fq &
 gzip -9 "$sample"S.fq &
 wait
 $seqstats "$sample"MetagenomicR1R2.fq.gz > "$sample"Metagenomic.seqstats

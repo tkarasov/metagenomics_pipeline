@@ -38,7 +38,7 @@ family = pd.read_csv(family_file, index_col=0).transpose()
 
 
 
-
+'''
 
 
 fig, ax = plt.subplots()
@@ -66,12 +66,8 @@ the_plot.legend(custom_legend, keep_legend.columns[0:9])
 plt.xticks(fontsize=8, rotation=90)
 plt.ylabel("Proportion of genome covered per A. thaliana genome")
 plt.savefig('genus_barplot.pdf', bbox_inches="tight")
+'''
 
-# PCA
-'''
-pca = PCA(n_components=5)
-pca.fit(df)
-'''
 fig, ax = plt.subplots()
 fig.set_size_inches(37, 21)
 #months = df['Month'].drop_duplicates()
@@ -90,7 +86,7 @@ custom_legend = [Line2D([0], [0], color=colors[0], lw=4),
                  Line2D([0], [0], color=colors[9], lw=4)]
 the_plot = keep_legend.plot.bar(stacked=True, color=colors, figsize=(10, 7), width=0.95)
 # plt.show()
-the_plot.legend(custom_legend, keep_legend.columns[0:9])
+the_plot.legend(custom_legend, keep_legend.columns[0:19])
 #fig.legend(loc=7, bbox_to_anchor= (1.2, 0.5))
 # fig.tight_layout()
 # fig.subplots_adjust(right=0.75)
