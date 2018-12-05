@@ -1,4 +1,7 @@
+#!/usr/bin/env python
 import csv
+import warnings
+warnings.filterwarnings("ignore", message="numpy.dtype size changed")
 from ete3 import NCBITaxa
 import pandas as pd
 import numpy as np
