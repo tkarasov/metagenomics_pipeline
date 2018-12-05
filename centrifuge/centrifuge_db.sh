@@ -9,10 +9,10 @@
 #this script takes the cleaned and parsed reads puts through centrifuge
 
 start=$(date +%s.%N)
-full_dir=$1
+full_dir=/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/swedish_samples/
 echo "The full directory going into centrifuge_db is":$full_dir
-rm -r $full_dir/centrifuge_output
-mkdir $full_dir/centrifuge_output
+#rm -r $full_dir/centrifuge_output
+#mkdir $full_dir/centrifuge_output
 #/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections/
 cd $full_dir
 #rm $full_dir/centrifuge_output/all_fastq_unpaired
@@ -22,14 +22,14 @@ for mfile in `ls | grep R1.fq`;
     do full_dir=`pwd`;
     samplename=`echo $mfile | sed -r 's/.R1.fq//g'`
     echo $samplename
-    echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_unpaired ; done
+    echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_paired ; done
 
 echo "Running centrifuge..."
 /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge -x /ebio/abt6_projects9/metagenomic_controlled/database/nt \
     --threads 4 \
-    --sample-sheet ./centrifuge_output/all_fastq_unpaired 
+    --sample-sheet $full_dir/centrifuge_output/all_fastq_paired
 
-#classification summary is writen to centrifuge_report.tsv
+#classification summary is writen to centrifuge_report.tsv. Nope
 
 end=$(date +%s.%N)
 runtime=$(python -c "print(${end} - ${start})")
