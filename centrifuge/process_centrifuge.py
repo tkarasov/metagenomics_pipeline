@@ -7,7 +7,7 @@ import sys
 '''the goal of this script is to process the output from centrifuge to give genus or family-level comparisons of composition'''
 
 #first variable is list of metagenomes to include in the table
-metagenome_list=sys.argv[1]
+#metagenome_list=sys.argv[1]
 ncbi = NCBITaxa()
 
 def get_desired_ranks(taxid, desired_ranks):
@@ -24,6 +24,7 @@ def get_desired_ranks(taxid, desired_ranks):
     #return rank_dict
 
 def process_centrifuge_report(input_report_file_name, classification_level):
+    print("Processing centrifuge output")
     desired_ranks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
     cent_out=pd.read_csv(input_report_file_name, sep='\t')
     taxids=cent_out['taxID']
@@ -44,7 +45,7 @@ def process_centrifuge_report(input_report_file_name, classification_level):
         virus=10239
 
         if len(set([fungi,oomycete,bacteria,virus,proteobacteria]).intersection(set(tax_dict.values())))==0:
-            print(tax_dict.values())
+            #print(tax_dict.values())
             pass
         elif classification_level=="family":
             try:
