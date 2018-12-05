@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/usr/bin/bash
 
 #$ -cwd
 #$ -l h_vmem=64G
@@ -6,6 +6,39 @@
 #$ -e error_centrifuge.out
 #$ -o output_centrifuge.out
 #$ -N sweden_centrifuge_controlled_metagenomics
+#this script takes the cleaned and parsed reads puts through centrifuge
+
+start=$(date +%s.%N)
+full_dir=$1
+echo "The full directory going into centrifuge_db is":$full_dir
+rm -r $full_dir/centrifuge_output
+mkdir $full_dir/centrifuge_output
+#/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections/
+cd $full_dir
+#rm $full_dir/centrifuge_output/all_fastq_unpaired
+#touch $full_dir/centrifuge_output/all_fastq_unpaired
+
+for mfile in `ls | grep R1.fq`;
+    do full_dir=`pwd`;
+    samplename=`echo $mfile | sed -r 's/.R1.fq//g'`
+    echo $samplename
+    echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_unpaired ; done
+
+echo "Running centrifuge..."
+/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge -x /ebio/abt6_projects9/metagenomic_controlled/database/nt \
+    --threads 4 \
+    --sample-sheet ./centrifuge_output/all_fastq_unpaired 
+
+#classification summary is writen to centrifuge_report.tsv
+
+end=$(date +%s.%N)
+runtime=$(python -c "print(${end} - ${start})")
+
+echo "Runtime was $runtime"
+
+
+
+
 
 
 #https://github.com/infphilo/centrifuge/blob/master/MANUAL.markdown#centrifuge-example
@@ -27,24 +60,3 @@
 #cat arch_bacteria_viral_fungi/*/*.fna > input-sequences.fna
 ## build centrifuge index with 4 threads
 #centrifuge-build -p 4 --conversion-table seqid2taxid.map --taxonomy-tree taxonomy/nodes.dmp --name-table taxonomy/names.dmp  input-sequences.fna abvf
-start=$(date +%s.%N)
-full_dir=/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/swedish_samples/
-mkdir $full_dir/centrifuge_output
-#/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections/
-cd $full_dir
-rm $full_dir/centrifuge_output/all_fastq_unpaired
-touch $full_dir/centrifuge_output/all_fastq_unpaired
-
-for mfile in `ls | grep R1.fq`;
-    do full_dir=`pwd`;
-    samplename=`echo $mfile | sed -r 's/.R1.fq//g'`
-    echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_unpaired ; done
-
-/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge -x /ebio/abt6_projects9/metagenomic_controlled/database/nt \
-    --threads 4 \
-    --sample-sheet $full_dir/centrifuge_output/all_fastq_unpaired
-
-end=$(date +%s.%N)
-runtime=$(python -c "print(${end} - ${start})")
-
-echo "Runtime was $runtime"

@@ -94,11 +94,11 @@ printf "Finished unmapped extraction status: $?\n"
 
 #split reads
 echo "Done with mapping reads, now splitting reads"
-zcat "$sample"MetagenomicR1R2.fq.gz | grep -A3 -P "/1" --no-group-separator  > $sample.R1.fq
-zcat "$sample"MetagenomicR1R2.fq.gz | grep -A3 -P "/2" --no-group-separator  > $sample.R2.fq
+cat "$sample"MetagenomicR1R2.fq | grep -A3 -P "/1" --no-group-separator  > $sample.R1.fq
+cat "$sample"MetagenomicR1R2.fq | grep -A3 -P "/2" --no-group-separator  > $sample.R2.fq
 gzip -9 "$sample"MetagenomicR1R2.fq &
 gzip -9 "$sample"S.fq &
 wait
 $seqstats "$sample"MetagenomicR1R2.fq.gz > "$sample"Metagenomic.seqstats
-
+#rm *R1R2.fq.gz
 
