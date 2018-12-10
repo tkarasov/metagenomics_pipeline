@@ -1,15 +1,15 @@
 #!/usr/bin/bash
-
-#$ -cwd
-#$ -l h_vmem=64G
-#$ -pe parallel 4
-#$ -e error_centrifuge.out
-#$ -o output_centrifuge.out
-#$ -N sweden_centrifuge_controlled_metagenomics
+#
+# $ -cwd
+# $ -l h_vmem=64G
+# $ -pe parallel 4
+# $ -e error_centrifuge.out
+# $ -o output_centrifuge.out
+# $ -N sweden_centrifuge_controlled_metagenomics
 #this script takes the cleaned and parsed reads puts through centrifuge
 
 start=$(date +%s.%N)
-full_dir=/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/swedish_samples/
+full_dir=$1
 echo "The full directory going into centrifuge_db is":$full_dir
 #rm -r $full_dir/centrifuge_output
 #mkdir $full_dir/centrifuge_output
@@ -29,7 +29,6 @@ echo "Running centrifuge..."
     --threads 4 \
     --sample-sheet $full_dir/centrifuge_output/all_fastq_paired
 
-#classification summary is writen to centrifuge_report.tsv. Nope
 
 end=$(date +%s.%N)
 runtime=$(python -c "print(${end} - ${start})")
