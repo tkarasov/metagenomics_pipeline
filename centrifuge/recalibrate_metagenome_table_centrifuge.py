@@ -12,10 +12,10 @@ import numpy as np
 import pandas as pd
 import warnings
 import ete3
-warnings.filterwarnings("ignore")  # some compatibility issue with
+warnings.filterwarnings("ignore", message="numpy.dtype size changed") # some compatibility issue with numpy
 '''
 USAGE EXAMPLE
-./recalibrate_metagenome_table -gen_dict genome_size_dict -meta metagenome_table -host tosal_read_count.txt
+./recalibrate_metagenome_table -gen_dict genome_size_dict -meta metagenome_table -host total_read_count.txt
 
 Assumes 150bp reads****
 '''
@@ -58,18 +58,17 @@ def calculate_percent_mapped(sample):
 
 
 def correct_depth(path):
-    '''before I was using the bam files to calculate average coverage but instead Ill use the depth function which is faster'''
+    '''before I was using the bam files to calculate average coverage but instead Ill use the depth function which is faster. The very last line of the depth file is the average depth for the nuclear portion'''
     all_depth = {}
     for root, dirs, fnames in os.walk(path):
         for fname in fnames:
             if "depth" in fname:
-                desired_file = fname
-                sample = desired.replace(".depth", "")
+                #sample = desired_file.replace(".depth", "")
+                sample=fname
                 error_depth = []
-                try:
-                    all_depth[sample] = calculate_percent_mapped(path + sample)
-                except subprocess.CalledProcessError:
-                    error_depth.append(sample)
+                depth=subprocess.check_output(['tail','-1',sample])
+                all_depth[sample.strip(".depth")] = float(depth.strip())
+                    #calculate_percent_mapped(path + "/"+sample)
     return all_depth
 
 
@@ -94,17 +93,23 @@ def convert_per_plant(meta_corrected, all_depth, genus_dict):
     '''output coverage per genome microbe divided by coverage per genome of A. thaliana'''
     athal_cov = {}
     # there have been problems with some bam files. Limit to those bam files that are fine.
-    meta_corrected_new = copy.deepcopy(meta_corrected)  # [list(all_bam.keys())]
-    athal = genus_dict["Arabidopsis"][0]
-    for key in list(all_bam.keys()):
-        bp_cov = read_len * all_bam[key][0] / float(athal * 1000000)
-        athal_cov[key] = bp_cov
+    meta_corrected_new = {}#copy.deepcopy(meta_corrected)  # [list(all_bam.keys())]
+    for rec in meta_corrected.keys():
+        new=rec.split("/")[-1].split(".R1.fq.report")[0]
+        print(rec)
+        meta_corrected_new[new]=meta_corrected[rec] / all_depth[new]
+
+    #athal = genus_dict["Arabidopsis"][0]
+    '''for key in list(all_depth.keys()):
+        bp_cov = all_depth[key]#read_len * all_depth[key][0] / float(athal * 1000000)
+        #athal_cov[key] = bp_cov
         try:
-            meta_corrected_new[key] = meta_corrected[key] / bp_cov
+            meta_corrected_new[key] = meta_corrected_new[key] / bp_cov
         except KeyError:
             print("Issue with " + key)
             pass
-    return meta_corrected_new
+    '''
+    return pd.DataFrame.from_dict(meta_corrected_new)
 
 
 def gather_tree_family_genus(genus_dict):
