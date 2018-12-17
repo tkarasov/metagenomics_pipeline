@@ -22,7 +22,7 @@
 
 #centrifuge pipeline instructions
 #change to the directory of reads
-curr_direc=/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections #$curr_direc
+curr_direc=`pwd`
 echo "This is the directory:"$curr_direc
 python=/ebio/abt6_projects7/small_projects/tkarasov/Programs/miniconda3/bin/python
 
