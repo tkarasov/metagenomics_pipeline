@@ -12,7 +12,7 @@ start=$(date +%s.%N)
 full_dir=$1
 echo "The full directory going into centrifuge_db is":$full_dir
 #rm -r $full_dir/centrifuge_output
-#mkdir $full_dir/centrifuge_output
+mkdir $full_dir/centrifuge_output
 #/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections/
 cd $full_dir
 #rm $full_dir/centrifuge_output/all_fastq_unpaired
@@ -29,6 +29,10 @@ echo "Running centrifuge..."
     --threads 4 \
     --sample-sheet $full_dir/centrifuge_output/all_fastq_paired
 
+#now generate centrifuge kreport
+#for file in `ls $full_dir/centrifuge_output | grep out`;
+#    do /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $file;
+#    done
 
 end=$(date +%s.%N)
 runtime=$(python -c "print(${end} - ${start})")
