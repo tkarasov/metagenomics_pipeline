@@ -91,7 +91,7 @@ if __name__ == '__main__':
     metagenome_info={}
     classification_level='family'
     #now build full metagenome table
-    metagenome_list=[line.strip().split()[0] for line in open("centrifuge_output/metagenomic_report.txt").readlines()]
+    metagenome_list=[line.strip().split()[0] for line in open("./centrifuge_output/metagenomic_report.txt").readlines()]
     microbes=[]
     #input_report_file_name="Tjor-2MetagenomicR1R2.fq.gz.report"
     set_class=set()
