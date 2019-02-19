@@ -5,7 +5,7 @@
 # $ -pe parallel 4
 # $ -e error_centrifuge.out
 # $ -o output_centrifuge.out
-# $ -N sweden_centrifuge_controlled_metagenomics
+# $ -N run_centrifuge_controlled_metagenomics
 #this script takes the cleaned and parsed reads puts through centrifuge
 
 start=$(date +%s.%N)

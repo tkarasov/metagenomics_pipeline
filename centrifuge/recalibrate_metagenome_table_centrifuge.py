@@ -65,6 +65,7 @@ def correct_depth(path):
             if "depth" in fname:
                 #sample = desired_file.replace(".depth", "")
                 sample=fname
+                print(sample)
                 error_depth = []
                 depth=subprocess.check_output(['tail','-1',sample])
                 all_depth[sample.strip(".depth")] = float(depth.strip())

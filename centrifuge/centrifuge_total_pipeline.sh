@@ -22,7 +22,7 @@
 
 #centrifuge pipeline instructions
 #change to the directory of reads
-curr_direc=`pwd`
+curr_direc=$curr_direc
 echo "This is the directory:"$curr_direc
 python=/ebio/abt6_projects7/small_projects/tkarasov/Programs/miniconda3/bin/python
 
