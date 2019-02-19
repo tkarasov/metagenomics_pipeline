@@ -114,3 +114,13 @@ The post-processing of the MEGAN output requires that the output tables from MEG
 
 Now with the csv file output from MEGAN, the read number needs to be updated to account for the 
 
+## Separate bacteria and eukaryote metagenome table
+separate_bacteria_eukary.py
+
+
+
+
+
+
+
+
