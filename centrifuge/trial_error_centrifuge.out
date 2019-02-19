@@ -1,0 +1,4 @@
+Error: Could not open alignment output file trial.report
+Error: Encountered internal Centrifuge exception (#1)
+Command: /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-class --wrapper basic-0 -x /ebio/abt6_projects9/metagenomic_controlled/database/nt -p 4 --met 1 --met-file /ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections -S trial.report -U /tmp/53546.unp 
+(ERR): centrifuge-class exited with value 1
