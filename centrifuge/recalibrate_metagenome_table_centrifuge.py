@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# the goal of this script is to take a metagenome table and recalibrate based off of the average size per genus. The script takes the output file from centrifuge then run through process_centrifuge.py (note the other script takes the output from malt/megan)
+# the goal of this script is to take a metagenome table and recalibrate based off of the average size per genus. The script takes the output file from centrifuge then runs through process_centrifuge.py (note the other script takes the output from malt/megan)
 
 import argparse
 import os
