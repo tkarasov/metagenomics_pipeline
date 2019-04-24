@@ -70,13 +70,13 @@ def process_centrifuge_report(input_report_file_name, classification_level):
 
 def process_centrifuge_report_specify_kingdom(input_report_file_name, classification_level, kingdom):
     print("Processing centrifuge output")
-    desired_ranks = ['superkingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
+    desired_ranks = ['superkingdom', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
     cent_out=pd.read_csv(input_report_file_name, sep='\t')
     taxids=cent_out['taxID']
     keep_class={}
     for taxid in taxids:
         tax_dict = get_desired_ranks(taxid, desired_ranks)
-
+        #hm.append(tax_dict['kingdom_id'])
         if len(set([kingdom]).intersection(set(tax_dict.values())))==0:
             pass
         elif classification_level=="family":
@@ -119,6 +119,7 @@ def aggregate_reads(keep_class, cent_out):
 
 def generate_table(metagenome_list, kingdom):
     set_class=set()
+    metagenome_info={}
     for input_report_file_name in metagenome_list:
         cent_out=pd.read_csv(open(input_report_file_name, 'rb'), sep='\t')
         keep_class=process_centrifuge_report_specify_kingdom(input_report_file_name, classification_level, kingdom)
@@ -138,7 +139,6 @@ def generate_table(metagenome_list, kingdom):
 
 
 if __name__ == '__main__':
-    metagenome_info={}
     classification_level='family'
     #now build full metagenome table
     metagenome_list=[line.strip().split()[0] for line in open("./centrifuge_output/metagenomic_report.txt").readlines()]
@@ -148,13 +148,22 @@ if __name__ == '__main__':
     #need to limit results to fungus, oomycete, bacteria and virus
     fungi=4751
     oomycete=4762
+    eukarya=2759
+    #eukarya is not good because it captures plant also
     bacteria=2
     proteobacteria=1224
     virus=10239
+    archaea=2157
+
     final_bac=generate_table(metagenome_list, bacteria)
     final_bac.to_csv("centrifuge_metagenome_table_bac.txt", sep="\t")
+    #final_euk=generate_table(metagenome_list, eukarya)
+    #final_euk.to_csv("centrifuge_metagenome_table_eukarya.txt", sep="\t")
+    final_vir=generate_table(metagenome_list, virus)
+    final_vir.to_csv("centrifuge_metagenome_table_virus.txt", sep="\t")
+    final_arc=generate_table(metagenome_list, archaea)
+    final_arc.to_csv("centrifuge_metagenome_table_archaea.txt", sep="\t")
     final_oom=generate_table(metagenome_list, oomycete)
     final_oom.to_csv("centrifuge_metagenome_table_oom.txt", sep="\t")
     final_fung=generate_table(metagenome_list, fungi)
     final_fung.to_csv("centrifuge_metagenome_table_fungi.txt", sep="\t")
-
