@@ -35,11 +35,18 @@ bash /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/
 #3 once all classification is done, aggregate output from centrifuge and run process_centrifuge.
 # The metagenomic_report file has a list of all of the centrifuge output reports
 ls $curr_direc/centrifuge_output/*R1.fq.report > $curr_direc/centrifuge_output/metagenomic_report.txt
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/process_centrifuge.py
+
+#$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/process_centrifuge.py
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/classify_eukaryote_prokaryote.py
+
 
 
 #4 Feed output from #3 into recalibrate which outputs normalized data file
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table.txt -host $curr_direc
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc
+
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc
+
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc
 
 
 #5 Graph output from #4
