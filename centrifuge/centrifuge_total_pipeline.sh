@@ -4,7 +4,6 @@
 #$ -pe parallel 4
 #  Request 32G of RAM
 #$ -l h_vmem=8G
-#$ -o $HOME/tmp/stdout_of_job
 #  The name shown in the qstat output and in the output file(s). The
 #  default is to use the script name.
 #$ -N metagenome.$1
