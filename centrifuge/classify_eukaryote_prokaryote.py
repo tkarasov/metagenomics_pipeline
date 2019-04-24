@@ -28,7 +28,7 @@ def get_desired_ranks(taxid, desired_ranks):
 
 def process_centrifuge_report(input_report_file_name, classification_level):
     print("Processing centrifuge output")
-    desired_ranks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
+    desired_ranks = ['superkingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
     cent_out=pd.read_csv(input_report_file_name, sep='\t')
     taxids=cent_out['taxID']
     keep_class={}
@@ -70,7 +70,7 @@ def process_centrifuge_report(input_report_file_name, classification_level):
 
 def process_centrifuge_report_specify_kingdom(input_report_file_name, classification_level, kingdom):
     print("Processing centrifuge output")
-    desired_ranks = ['kingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
+    desired_ranks = ['superkingdom', 'phylum', 'class', 'order', 'family', 'genus', 'species']
     cent_out=pd.read_csv(input_report_file_name, sep='\t')
     taxids=cent_out['taxID']
     keep_class={}
@@ -78,7 +78,6 @@ def process_centrifuge_report_specify_kingdom(input_report_file_name, classifica
         tax_dict = get_desired_ranks(taxid, desired_ranks)
 
         if len(set([kingdom]).intersection(set(tax_dict.values())))==0:
-            #print(tax_dict.values())
             pass
         elif classification_level=="family":
             try:
@@ -101,7 +100,8 @@ def process_centrifuge_report_specify_kingdom(input_report_file_name, classifica
 def aggregate_reads(keep_class, cent_out):
     '''aggregates all reads of a given classification level'''
     unique_reads=cent_out[['taxID', 'numUniqueReads']]
-    unique_reads['names']=[keep_class.get(key) for key in unique_reads['taxID']]
+    temp=[keep_class.get(key) for key in unique_reads['taxID']]
+    unique_reads=unique_reads.assign(names=list(temp))
     unique_agg=unique_reads.groupby('names').sum()
     thing=[]
     for taxid in unique_agg.index:
@@ -133,8 +133,7 @@ def generate_table(metagenome_list, kingdom):
             final_table[sample].loc[rec]=metagenome_info[sample][rec]
 
     final_table=final_table.fillna(0)
-
-    final_table.to_csv("centrifuge_metagenome_table_"+kingdom+".txt", sep="\t")
+    return final_table
 
 
 
@@ -152,5 +151,10 @@ if __name__ == '__main__':
     bacteria=2
     proteobacteria=1224
     virus=10239
-    generate_table(metagenome_list, bacteria)
+    final_bac=generate_table(metagenome_list, bacteria)
+    final_bac.to_csv("centrifuge_metagenome_table_bac.txt", sep="\t")
+    final_oom=generate_table(metagenome_list, oomycete)
+    final_oom.to_csv("centrifuge_metagenome_table_oom.txt", sep="\t")
+    final_fung=generate_table(metagenome_list, fungi)
+    final_fung.to_csv("centrifuge_metagenome_table_fungi.txt", sep="\t")
 
