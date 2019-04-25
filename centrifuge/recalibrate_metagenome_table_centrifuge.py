@@ -26,6 +26,8 @@ parser.add_argument('-meta', '--metagenome', type=str, required=True,
 parser.add_argument('-host', '--host_dir', type=str, help="Directory for all bam files to which host was mapped.")
 parser.add_argument('-read_len', '--read_length', type=float, default=150)
 
+parser.add_argument('-org', '--organism', type=str, default=150)
+
 params = parser.parse_args()
 
 print("Running Metagenome Recalibrator")
@@ -35,17 +37,29 @@ def convert_read_coverage(meta_phy, phy_dict):
     meta_phy_new = copy.deepcopy(meta_phy)
     for phy in meta_phy.index:
         try:
+            #resize to in bp
             size = phy_dict[phy][0] * 1000000
+            #if genome is too small (poor assembly?)
             if size < 2000000:
                 size = 10000000
+
+            #correct to numpber of bp
             reads = meta_phy.loc[phy] * 150.0
+
+            #calculate coverage
             coverage = reads / size
             meta_phy_new.loc[phy] = coverage
             # print(coverage)
+
+        #but if the family is not in the genus database
         except KeyError:
             print(phy)
-            coverage = reads / 50000000
-            meta_phy_new.loc[phy] = coverage
+            try:
+                reads = meta_phy.loc[phy] * 150.0
+                coverage = reads / 50000000
+                meta_phy_new.loc[phy] = coverage
+            except KeyError:
+                print(phy + "is not included")
     return meta_phy_new
 
 
@@ -153,7 +167,8 @@ genus_size = "/ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_
 metagenome = params.metagenome
 read_len = params.read_length
 host_reads = params.host_dir
-
+organism = params.organism
+#host_reads='/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/swedish_samples/'
 
 metagenome_data = pd.read_csv(metagenome, error_bad_lines=False, sep='\t', header=0, index_col=0)
 genus_dict = pickle.load(open(genus_size, 'rb'))
@@ -178,4 +193,4 @@ meta_family_per_plant = convert_per_plant(meta_family_correct, all_depth, genus_
 
 # output converted table
 #meta_corrected_per_plant.to_csv("meta_genus_corrected_per_plant.csv", header=True, index=True)
-meta_family_per_plant.to_csv("meta_family_corrected_per_plant.csv", header=True, index=True)
+meta_family_per_plant.to_csv("meta_family_corrected_per_plant_"+organism+".csv", header=True, index=True)
