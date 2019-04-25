@@ -44,11 +44,13 @@ $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeli
 
 
 #4 Feed output from #3 into recalibrate which outputs normalized data file
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc -org bacteria
 
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc -org oomycete
 
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc -org fungi
+
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_virus.txt -host $curr_direc -org virus
 
 
 #5 Graph output from #4
