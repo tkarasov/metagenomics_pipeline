@@ -14,10 +14,17 @@ done
 
 for direc in `ls /ebio/abt6_projects9/metagenomic_controlled/data/raw_reads/dc3000_infections`; do
 echo $direc
+<<<<<<< HEAD
 my_fil=`ls /ebio/abt6_projects9/metagenomic_controlled/data/raw_reads/dc3000_infections/$direc | grep R2`
 for rec in $my_fil
 do
 num_rec=`zcat /ebio/abt6_projects9/metagenomic_controlled/data/raw_reads/dc3000_infections/$direc/$rec | grep "^@" | wc -l`
+#=======
+#my_fil=`ls $direc | grep R2`
+#for rec in $my_fil
+#do
+#num_rec=`zcat $direc/$rec | grep "^@" | wc -l`
+#>>>>>>> dd183ea909de7d281ec8f5cc6b8d3abfae8a3c48
 echo $direc/rec, $num_rec >> dc3000_count.txt
 done
 done
@@ -32,9 +39,12 @@ echo $direc/rec, $num_rec >> /ebio/abt6_projects9/metagenomic_controlled/data/ra
 done
 done
 
+#<<<<<<< HEAD
 #hpa all okay except for control
 
 
+#=======
+#>>>>>>> dd183ea909de7d281ec8f5cc6b8d3abfae8a3c48
 for direc in `ls /ebio/abt6_projects9/metagenomic_controlled/data/raw_reads/german_samples`; do
 echo $direc
 my_fil=`ls $direc | grep R2`
