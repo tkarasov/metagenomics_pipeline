@@ -29,10 +29,10 @@ python=/ebio/abt6_projects7/small_projects/tkarasov/Programs/miniconda3/bin/pyth
 
 #any_metagenome_pipeline_centrifuge.sh
 #1 Run bwa mem to remove plant reads
-#run_plantRemoval_tlk_centrifuge.sh
+run_plantRemoval_tlk_centrifuge.sh
 
 #2 Take unmapped reads and classify with centrifuge
-#bash /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_db.sh $curr_direc
+bash /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_db.sh $curr_direc
 
 #3 once all classification is done, aggregate output from centrifuge and run process_centrifuge.
 # The metagenomic_report file has a list of all of the centrifuge output reports
