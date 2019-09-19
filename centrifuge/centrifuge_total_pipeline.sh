@@ -25,7 +25,7 @@
 curr_direc=$curr_direc
 cd $curr_direc∂
 echo "This is the directory:"$curr_direc
-python=/ebio/abt6_projects7/small_projects/tkarasov/Programs/miniconda3/bin/python
+python=/ebio/abt6_projects9/metagenomic_controlled/Programs/anaconda3/bin/python
 
 #any_metagenome_pipeline_centrifuge.sh
 #1 Run bwa mem to remove plant reads
