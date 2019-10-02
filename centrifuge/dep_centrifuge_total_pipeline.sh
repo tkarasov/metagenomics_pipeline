@@ -1,7 +1,12 @@
 #!/bin/sh
 #
+<<<<<<< HEAD
 #  Reserve 4 CPUs for this job
 #$ -pe parallel 8
+=======
+#  Reserve 32 CPUs for this job
+#$ -pe parallel 32
+>>>>>>> 3cf87794c79d1ee96366356cf86d6a7287aafd66
 #  Request 32G of RAM
 #$ -l h_vmem=32G
 #  The name shown in the qstat output and in the output file(s). The
@@ -37,6 +42,13 @@ bash /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/
 #3 once all classification is done, aggregate output from centrifuge and run process_centrifuge.
 # The metagenomic_report file has a list of all of the centrifuge output reports
 ls $curr_direc/centrifuge_output/*R1.fq.report > $curr_direc/centrifuge_output/metagenomic_report.txt
+
+#generate a kraken-style report for every centrifuge report
+for report in `cat $curr_direc/centrifuge_output/metagenomic_report.txt`;
+  do \
+    centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $report;
+     & done
+    
 
 # $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/process_centrifuge.py
 $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/classify_eukaryote_prokaryote.py
