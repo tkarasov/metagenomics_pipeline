@@ -41,7 +41,7 @@ ls $curr_direc/centrifuge_output/*R1.fq.report > $curr_direc/centrifuge_output/m
 #generate a kraken-style report for every centrifuge report
 for report in `cat $curr_direc/centrifuge_output/metagenomic_report.txt`;
   do \
-    centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $report;
+     /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $report > $report.kreport;
      & done
     
 
