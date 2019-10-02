@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-#  Reserve 4 CPUs for this job
-#$ -pe parallel 4
+#  Reserve 32 CPUs for this job
+#$ -pe parallel 32
 #  Request 32G of RAM
 #$ -l h_vmem=8G
 #  The name shown in the qstat output and in the output file(s). The
@@ -42,7 +42,7 @@ ls $curr_direc/centrifuge_output/*R1.fq.report > $curr_direc/centrifuge_output/m
 for report in `cat $curr_direc/centrifuge_output/metagenomic_report.txt`;
   do \
     centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $report;
-    done
+     & done
     
 
 # $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/process_centrifuge.py
