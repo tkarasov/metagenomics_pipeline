@@ -30,9 +30,9 @@ echo "Running centrifuge..."
     --sample-sheet $full_dir/centrifuge_output/all_fastq_paired
 
 #now generate centrifuge kreport
-#for file in `ls $full_dir/centrifuge_output | grep out`;
-#    do /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $file;
-#    done
+for file in `ls $full_dir/centrifuge_output | grep out`;
+    do /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $file;
+    done
 
 end=$(date +%s.%N)
 runtime=$(python -c "print(${end} - ${start})")
