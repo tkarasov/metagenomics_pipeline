@@ -38,6 +38,7 @@ bash /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/
 # The metagenomic_report file has a list of all of the centrifuge output reports
 ls $curr_direc/centrifuge_output/*R1.fq.report > $curr_direc/centrifuge_output/metagenomic_report.txt
 
+
 #generate a kraken-style report for every centrifuge report
 for report in `cat $curr_direc/centrifuge_output/metagenomic_report.txt`;
   do \
