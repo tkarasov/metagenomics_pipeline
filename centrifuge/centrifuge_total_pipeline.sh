@@ -1,9 +1,9 @@
 #!/bin/sh
 #
 #  Reserve 4 CPUs for this job
-#$ -pe parallel 4
+#$ -pe parallel 8
 #  Request 32G of RAM
-#$ -l h_vmem=8G
+#$ -l h_vmem=32G
 #  The name shown in the qstat output and in the output file(s). The
 #  default is to use the script name.
 #$ -N metagenome.$1
@@ -23,13 +23,13 @@
 #centrifuge pipeline instructions
 #change to the directory of reads
 curr_direc=$curr_direc
-cd $curr_direc∂
+cd $curr_direc
 echo "This is the directory:"$curr_direc
 python=/ebio/abt6_projects9/metagenomic_controlled/Programs/anaconda3/bin/python
 
 #any_metagenome_pipeline_centrifuge.sh
 #1 Run bwa mem to remove plant reads
-run_plantRemoval_tlk_centrifuge.sh
+#run_plantRemoval_tlk_centrifuge.sh
 
 #2 Take unmapped reads and classify with centrifuge
 bash /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_db.sh $curr_direc
