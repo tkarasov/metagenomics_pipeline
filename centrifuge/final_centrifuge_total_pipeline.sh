@@ -47,7 +47,6 @@ qsub -hold_jid "reads.patho*" curr_direc=$curr_direc /ebio/abt6_projects9/metage
 #To submit an array job with -t, need to put 1-num_jobs (not just the number of jobs)
 ls $curr_direc/centrifuge_output/*R1.fq.out > $curr_direc/centrifuge_output/metagenomic_out.txt
 
-
 my_jobs=$((`wc -l $curr_direc/centrifuge_output/metagenomic_out.txt | awk '{print $1}'`))
 
 qsub -hold_jid "run_centrifuge*" -t 1-$((my_jobs)) -v curr_direc=$curr_direc /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_total_step2_v2.sh
@@ -55,4 +54,4 @@ qsub -hold_jid "run_centrifuge*" -t 1-$((my_jobs)) -v curr_direc=$curr_direc /eb
 #########################################################################
 ## Recalibrate kreports
 #########################################################################
-qsub -hold_jid "make_kreport*" curr_direc=$curr_direc /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_total_step3_v2.sh
+qsub -hold_jid "make_kreport*" -v curr_direc=$curr_direc /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_total_step3_v2.sh
