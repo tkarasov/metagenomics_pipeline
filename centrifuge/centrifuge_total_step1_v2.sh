@@ -1,16 +1,12 @@
 #!/bin/sh
 #
-#  Reserve 4 CPUs for this job
+#  Reserve 8 CPUs for this job
 #$ -pe parallel 8
-#  Reserve 32 CPUs for this job
-#$ -pe parallel 32
 #  Request 32G of RAM
 #$ -l h_vmem=32G
 #  The name shown in the qstat output and in the output file(s). The
 #  default is to use the script name.
 #$ -N run_centrifuge.$1
-#  Run job from current working directory
-# Merge stdout and stderr. The job will create only one output file which
 # contains both the real output and the error messages.
 #$ -e error_centrifuge_total.out
 #$ -o output_centrifuge_total.out
