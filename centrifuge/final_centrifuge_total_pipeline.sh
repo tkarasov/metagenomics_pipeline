@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 #
 # $ -cwd
 
@@ -10,8 +10,8 @@
 #change to the directory of reads
 #curr_direc is the output directory
 
-curr_direc=$curr_direc
-read_direc=$read_direc
+curr_direc=$1
+read_direc=$2
 cd $curr_direc
 echo "This is the directory:"$curr_direc
 python=/ebio/abt6_projects9/metagenomic_controlled/Programs/anaconda3/bin/python
@@ -39,7 +39,7 @@ for samp_temp in `ls $read_direc | grep illumina`; do
 #Take unmapped reads and classify with centrifuge
 #The above for loop will run all of the reads, clean them. Then we want to wait to submit centrifuge until the cleaned reads are done
 
-qsub -hold_jid "reads.patho*" curr_direc=$curr_direc /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_total_step1_v2.sh
+qsub -hold_jid "reads.patho*" -v curr_direc=$curr_direc /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/centrifuge_total_step1_v2.sh
 
 #########################################################################
 ## Make kreport

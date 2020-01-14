@@ -36,7 +36,7 @@ python=/ebio/abt6_projects9/metagenomic_controlled/Programs/anaconda3/bin/python
 conda activate pathodopsis
 
 #use kraken-biom to aggregate the kraken output
-kreports=($curr_direc/centrifuge_output/*.kreport)
+kreports=($curr_direc/centrifuge_output/*.out.kreport)
 
 #now pass the kreports array to kraken-biom to make the tsv classified only at the family level
 kraken-biom "${kreports[@]}" -o $curr_direc/centrifuge_output/all_families_table.tsv --fmt tsv -v --max F --min F

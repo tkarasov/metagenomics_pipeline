@@ -1,9 +1,7 @@
 #!/bin/sh
 #
 #  Reserve 4 CPUs for this job
-#$ -pe parallel 8
-#  Reserve 32 CPUs for this job
-#$ -pe parallel 32
+#$ -pe parallel 4
 #  Request 32G of RAM
 #$ -l h_vmem=32G
 #  The name shown in the qstat output and in the output file(s). The
