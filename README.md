@@ -1,5 +1,5 @@
 # metagenomics_pipeline
-This pipeline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes.
+This pipeline was originally developed by Julian Regalado. Talia Karasov took the pipeline and is continuously adpating for her own purposes including switching to centrifuge instead of diamond
 
 ## To retrieve the repository
 Again, most of the following bash and commands were first primarly developed by Juliana Regalado then developed further by Talia Karasov. The post-processing python scripts were written by Talia.
@@ -9,11 +9,6 @@ The following will download this repository and some of it's dependencies. It is
        cd metagenomics_pipeline
        # Add current directory to your PATH environmental variable so all scripts can be ran
        export PATH=$PATH:$(pwd)
-In order to get future updates, make sure to regularly execute:
-
-       git pull
-       
-This will automatically apply any change made to any of the files in this repository
        
 ## Check you have all the software needed to run the scripts
 
