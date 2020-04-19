@@ -10,6 +10,7 @@
 
 start=$(date +%s.%N)
 full_dir=$1
+split=$2
 
 echo "The full directory going into centrifuge_db is":$full_dir
 #rm -r $full_dir/centrifuge_output
@@ -19,16 +20,16 @@ cd $full_dir
 rm $full_dir/centrifuge_output/all_fastq_paired
 #touch $full_dir/centrifuge_output/all_fastq_unpaired
 
-for mfile in `ls | grep R1.fq`;
-    do full_dir=`pwd`;
-    samplename=`echo $mfile | sed -r 's/.R1.fq//g'`
-    echo $samplename
-    echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_paired ; done
+# for mfile in `ls | grep R1.fq`;
+#     do full_dir=`pwd`;
+#     samplename=`echo $mfile | sed -r 's/.R1.fq//g'`
+#     echo $samplename
+#     echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_paired ; done
 
 echo "Running centrifuge..."
 /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge -x /ebio/abt6_projects9/metagenomic_controlled/database/nt \
     --threads 8 \
-    --sample-sheet $full_dir/centrifuge_output/all_fastq_paired
+    --sample-sheet $full_dir/centrifuge_output/$split
 
 #now generate centrifuge kreport
 for file in `ls $full_dir/centrifuge_output | grep out`;

@@ -2,8 +2,8 @@
 #
 #  Reserve 8 CPUs for this job
 #$ -pe parallel 8
-#  Request 32G of RAM
-#$ -l h_vmem=32G
+#  Request 64G of RAM
+#$ -l h_vmem=64G
 #  The name shown in the qstat output and in the output file(s). The
 #  default is to use the script name.
 #$ -N run_centrifuge.$1
@@ -38,21 +38,25 @@ ls $curr_direc/centrifuge_output/*R1.fq.report > $curr_direc/centrifuge_output/m
 
 
 #generate a kraken-style report for every centrifuge report
-for report in `cat $curr_direc/centrifuge_output/metagenomic_report.txt`;
-  do \
-     /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $report > $report.kreport;
-     & done
+# for report in `cat $curr_direc/centrifuge_output/metagenomic_report.txt`;
+#  do \
+#     /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x \
+#      /ebio/abt6_projects9/metagenomic_controlled/database/nt $report > $report.kreport;
+#     & done
 
 
 # $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/process_centrifuge.py
 $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/classify_eukaryote_prokaryote.py
 
 #4 Feed output from #3 into recalibrate which outputs normalized data files
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc -org bacteria -resize 3870000 -min_recal 3870000 >>$curr_direc/centrifuge_output/family_present.txt
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py \
+-meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc -org bacteria -resize 3870000 -min_recal 3870000 >>$curr_direc/centrifuge_output/family_present.txt
 
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc -org oomycete -resize 37000000 -min_recal 37000000 >>$curr_direc/centrifuge_output/family_present.txt
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py \
+-meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc -org oomycete -resize 37000000 -min_recal 37000000 >>$curr_direc/centrifuge_output/family_present.txt
 
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc -org fungi -resize 8970000 -min_recal 8970000 >>$curr_direc/centrifuge_output/family_present.txt
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py \
+-meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc -org fungi -resize 8970000 -min_recal 8970000 >>$curr_direc/centrifuge_output/family_present.txt
 
 
 #5 Graph output from #4
