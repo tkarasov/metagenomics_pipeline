@@ -1,45 +1,52 @@
 #!/usr/bin/bash
-#
-# $ -cwd
-# $ -l h_vmem=64G
-# $ -pe parallel 8
-# $ -e error_centrifuge.out
-# $ -o $full_dir/output_centrifuge.out
-# $ -N run_centrifuge_controlled_metagenomics
+#  Reserve 8 CPUs for this job
+#$ -pe parallel 2
+#  Request 64G of RAM
+#$ -l h_vmem=64G
+#  The name shown in the qstat output and in the output file(s). The
+#  default is to use the script name.
+#$ -N run_centrifuge.$1
+# contains both the real output and the error messages.
+#$ -e error_centrifuge_total.out
+#$ -o output_centrifuge_total.out
+#$ -j y
+#  Use /bin/bash to execute this script
+#$ -S /bin/bash
+#$ -cwd
 #this script takes the cleaned and parsed reads puts through centrifuge
 
 start=$(date +%s.%N)
-full_dir=$1
+curr_direc=$1
 split=$2
 
-echo "The full directory going into centrifuge_db is":$full_dir
-#rm -r $full_dir/centrifuge_output
-mkdir $full_dir/centrifuge_output
+echo "The full directory going into centrifuge_db is":$curr_direc
+#rm -r $curr_direc/centrifuge_output
+mkdir $curr_direc/centrifuge_output
 #/ebio/abt6_projects9/metagenomic_controlled/data/processed_reads/dc3000_infections/
-cd $full_dir
-rm $full_dir/centrifuge_output/all_fastq_paired
-#touch $full_dir/centrifuge_output/all_fastq_unpaired
+cd $curr_direc
+#rm $curr_direc/centrifuge_output/all_fastq_paired
+#touch $curr_direc/centrifuge_output/all_fastq_unpaired
 
 # for mfile in `ls | grep R1.fq`;
-#     do full_dir=`pwd`;
+#     do curr_direc=`pwd`;
 #     samplename=`echo $mfile | sed -r 's/.R1.fq//g'`
 #     echo $samplename
-#     echo -e "2\t"$full_dir/$samplename.R1.fq"\t"$full_dir/$samplename.R2.fq"\t" $full_dir/centrifuge_output/$mfile.out"\t"$full_dir/centrifuge_output/$mfile.report >> $full_dir/centrifuge_output/all_fastq_paired ; done
+#     echo -e "2\t"$curr_direc/$samplename.R1.fq"\t"$curr_direc/$samplename.R2.fq"\t" $curr_direc/centrifuge_output/$mfile.out"\t"$curr_direc/centrifuge_output/$mfile.report >> $curr_direc/centrifuge_output/all_fastq_paired ; done
 
 echo "Running centrifuge..."
 /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge -x /ebio/abt6_projects9/metagenomic_controlled/database/nt \
-    --threads 8 \
-    --sample-sheet $full_dir/centrifuge_output/$split
+    --threads 2 \
+    --sample-sheet $curr_direc/centrifuge_output/$split
 
-#now generate centrifuge kreport
-for file in `ls $full_dir/centrifuge_output | grep out`;
-    do /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $file;
-    done
+# #now generate centrifuge kreport
+# for file in `ls $curr_direc/centrifuge_output | grep out`;
+#     do /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline_software/bin/centrifuge-kreport -x /ebio/abt6_projects9/metagenomic_controlled/database/nt $file;
+#     done
 
-end=$(date +%s.%N)
-runtime=$(python -c "print(${end} - ${start})")
+# end=$(date +%s.%N)
+# runtime=$(python -c "print(${end} - ${start})")
 
-echo "Runtime was $runtime"
+# echo "Runtime was $runtime"
 
 
 
