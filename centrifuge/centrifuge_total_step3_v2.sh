@@ -52,11 +52,14 @@ $python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeli
 #########################################################################
 
 #4 Feed output from #3 into recalibrate which outputs normalized data files
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc -org bacteria -resize 3870000 -min_recal 3870000 >>$curr_direc/centrifuge_output/family_present.txt
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py \
+	-meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_bac.txt -host $curr_direc -org bacteria -resize 3870000 -min_recal 3870000 >>$curr_direc/centrifuge_output/family_present.txt
 
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc -org oomycete -resize 37000000 -min_recal 37000000 >>$curr_direc/centrifuge_output/family_present.txt
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py \
+	-meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_oom.txt -host $curr_direc -org oomycete -resize 37000000 -min_recal 37000000 >>$curr_direc/centrifuge_output/family_present.txt
 
-$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py -meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc -org fungi -resize 8970000 -min_recal 8970000 >>$curr_direc/centrifuge_output/family_present.txt
+$python /ebio/abt6_projects9/metagenomic_controlled/Programs/metagenomics_pipeline/centrifuge/recalibrate_metagenome_table_centrifuge_v2.py \
+	-meta $curr_direc/centrifuge_output/centrifuge_metagenome_table_fungi.txt -host $curr_direc -org fungi -resize 8970000 -min_recal 8970000 >>$curr_direc/centrifuge_output/family_present.txt
 
 
 #5 Graph output from #4

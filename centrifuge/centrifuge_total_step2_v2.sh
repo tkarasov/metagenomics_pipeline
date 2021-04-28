@@ -24,7 +24,7 @@ echo "This is the directory:"$curr_direc
 ## Make an array of the centrifuge report names
 #########################################################################
 #INPUTFILES=($(cat $curr_direc/centrifuge_output/metagenomic_out.txt))
-INPUTFILES=($(cat $curr_direc/centrifuge_output/metagenomic_report.txt))
+INPUTFILES=($(cat $curr_direc/centrifuge_output/metagenomic_out.txt))
 
 # Pull data file name from list defined above according to job id
 INPUTFILENAME="${INPUTFILES[$SGE_TASK_ID - 1]}"
